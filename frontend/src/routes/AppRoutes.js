@@ -3,6 +3,7 @@ import { Route, Routes, BrowserRouter as Router, Navigate } from "react-router-d
 import { AppContext } from "../context/AppProvider";
 import HomePage from "../pages/HomePage"
 import LoginPage from "../pages/LoginPage"
+import SignUpPage from "../pages/SignUpPage";
 
 function AppRoutes() {
 
@@ -17,6 +18,7 @@ function AppRoutes() {
     <Router>
       <Routes>
         <Route path="/login" exact element={<LoginPage/>}></Route>
+        <Route path="/signup" exact element={<SignUpPage/>}></Route>
         <Route path="/" exact element={
           <PrivateRoute>
             <HomePage />

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.LoginDTO;
+import com.example.demo.dto.TokenDTO;
 import com.example.demo.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,8 @@ public class AuthController {
         UsernamePasswordAuthenticationToken upt =
             new UsernamePasswordAuthenticationToken(payload.getEmail(), payload.getPassword());
         Authentication auth = authenticationManager.authenticate(upt);
-        return ResponseEntity.ok().build();
+        String token = tokenService.generateToken(auth);
+        return ResponseEntity.ok(TokenDTO.builder().token(token).type("Bearer").build());
     }
 
 }

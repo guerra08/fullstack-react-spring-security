@@ -1,7 +1,11 @@
 import { Alert, Box, Button, Container, CssBaseline, TextField, Typography } from '@mui/material';
+import { useContext } from 'react';
 import { SignUp } from '../api/Requests';
+import { AppContext } from '../context/AppProvider';
 
 function SignUpPage() {
+
+  const { alertContents, alertSeverity, showAlert, doShowAlert } = useContext(AppContext);
 
   /**
    * Handles the login form submission
@@ -14,19 +18,23 @@ function SignUpPage() {
       email: data.get('email'),
       password: data.get('password'),
     };
-    const result = await SignUp(payload);
-    if(result.status === 201 || result.status === 200){
-      <Alert severity="success">Account created with success!</Alert>
+    try{
+      const result = await SignUp(payload);
+      if(result.status === 201){
+        doShowAlert({severity: "success", contents: "User created!", timeout: 3000});
+      }
+      else{
+        doShowAlert({severity: "error", contents: "Error", timeout: 3000});
+      }
+    } catch(err){
+      doShowAlert({severity: "error", contents: "Error", timeout: 3000});
     }
-    else{
-      <Alert severity="error">Unable to create account :(</Alert>
-    }
-
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      {showAlert ? <Alert severity={alertSeverity}>{alertContents}</Alert> : <></>}
       <Box
         sx={{
           marginTop: 8,

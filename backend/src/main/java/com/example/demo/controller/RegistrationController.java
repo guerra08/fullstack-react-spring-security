@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.RegistrationDTO;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ public class RegistrationController {
     public ResponseEntity<?> postRegisterUser(@RequestBody RegistrationDTO payload){
         try {
             userService.createUser(payload);
-            return ResponseEntity.ok("User created with success.");
+            return ResponseEntity.status(HttpStatus.CREATED).body("User created.");
         } catch (Exception e){
             return ResponseEntity.badRequest().build();
         }

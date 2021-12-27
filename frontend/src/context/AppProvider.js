@@ -1,11 +1,11 @@
 import { createContext, useState } from 'react';
+import api from '../api/api';
 
 const AppContext = createContext();
 
 function AppProvider({ children }) {
-  const [userAuth, setUserAuth] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-  
   /**
    * GLOBAL ALERTS (MUI ALERTS) 
    */
@@ -13,15 +13,26 @@ function AppProvider({ children }) {
   const [alertSeverity, setAlertSeverity] = useState(null);
   const [alertContents, setAlertContents] = useState(null);
 
-  const doLogin = () => {
-    // IMPLEMENT LOGIN LOGIC
+  const doLogin = async (payload) => {
     setLoading(true);
-    console.log("Doing login...");
-    setUserAuth(true);
+    try{
+      const response = await api.post("/auth", payload);
+      if(response.status !== 200){
+        doShowAlert({ severity: "error", contents: "Unable to Login", timeout: 3000 });
+      }
+      else {
+        const { token, user } = response.data;
+        api.defaults.headers.Authorization = `${token.type} ${token.token}`;
+        setUser(user);
+      }
+    } catch (err) {
+      doShowAlert({ severity: "error", contents: "Unable to Login", timeout: 3000 });
+    }
   };
 
   const doSignOut = () => {
-    setUserAuth(null);
+    api.defaults.headers.Authorization = null;
+    setUser(null);
   }
 
   const doShowAlert = ({severity, contents, timeout}) => {
@@ -42,7 +53,7 @@ function AppProvider({ children }) {
         doLogin,
         doSignOut,
         doShowAlert,
-        userAuth,
+        user,
         loading,
         showAlert,
         alertContents,

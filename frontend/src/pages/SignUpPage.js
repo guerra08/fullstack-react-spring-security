@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Container, CssBaseline, TextField, Typography } from '@mui/material';
 import { useContext } from 'react';
-import { SignUp } from '../api/Requests';
+import api from '../api/api';
 import { AppContext } from '../context/AppProvider';
 
 function SignUpPage() {
@@ -15,19 +15,20 @@ function SignUpPage() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const payload = {
+      name: data.get('name'),
       email: data.get('email'),
       password: data.get('password'),
     };
-    try{
-      const result = await SignUp(payload);
-      if(result.status === 201){
-        doShowAlert({severity: "success", contents: "User created!", timeout: 3000});
+    try {
+      const response = await api.post("/register", payload);
+      if (response.status === 201) {
+        doShowAlert({ severity: "success", contents: "User created!", timeout: 3000 });
       }
-      else{
-        doShowAlert({severity: "error", contents: "Error", timeout: 3000});
+      else {
+        doShowAlert({ severity: "error", contents: "Error", timeout: 3000 });
       }
-    } catch(err){
-      doShowAlert({severity: "error", contents: "Error", timeout: 3000});
+    } catch (err) {
+      doShowAlert({ severity: "error", contents: "Error", timeout: 3000 });
     }
   };
 
@@ -47,6 +48,16 @@ function SignUpPage() {
           Sign Up
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="name"
+            label="Name"
+            name="name"
+            autoComplete="name"
+            autoFocus
+          />
           <TextField
             margin="normal"
             required

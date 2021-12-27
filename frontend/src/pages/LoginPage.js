@@ -1,23 +1,29 @@
-import { Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, Link, TextField, Typography } from '@mui/material';
+import { useContext } from 'react';
+import { AppContext } from '../context/AppProvider';
 
 function LoginPage() {
+
+  const { doLogin, showAlert, alertSeverity, alertContents} = useContext(AppContext);
 
   /**
    * Handles the login form submission
    * @param {*} event 
    */
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const payload = {
       email: data.get('email'),
       password: data.get('password'),
-    });
+    };
+    await doLogin(payload);
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      {showAlert ? <Alert severity={alertSeverity}>{alertContents}</Alert> : <></>}
       <Box
         sx={{
           marginTop: 8,
@@ -63,6 +69,7 @@ function LoginPage() {
             Sign In
           </Button>
         </Box>
+        <Link href="/signup">Create an account</Link>
       </Box>
     </Container>
   );

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Route, Routes, BrowserRouter as Router, Navigate } from "react-router-dom"
+import { Route, Routes, BrowserRouter as Router } from "react-router-dom"
 import { AppContext } from "../context/AppProvider";
 import HomePage from "../pages/HomePage"
 import LoginPage from "../pages/LoginPage"
@@ -7,23 +7,20 @@ import SignUpPage from "../pages/SignUpPage";
 
 function AppRoutes() {
 
-  const { userAuth } = useContext(AppContext);
-
-  function PrivateRoute({ children }) {
-    const auth = userAuth;
-    return auth ? children : <Navigate to="/login" />;
-  }
+  const { user } = useContext(AppContext);
 
   return (
     <Router>
       <Routes>
-        <Route path="/login" exact element={<LoginPage/>}></Route>
-        <Route path="/signup" exact element={<SignUpPage/>}></Route>
-        <Route path="/" exact element={
-          <PrivateRoute>
-            <HomePage />
-          </PrivateRoute>
-        }/>
+        {!user 
+        ? 
+          <>
+            <Route path="/" exact element={<LoginPage/>} />
+            <Route path="/signup" exact element={<SignUpPage/>} /> 
+          </>
+        :
+          <Route path="/" exact element={<HomePage />} />
+        }
       </Routes>
     </Router>
   )

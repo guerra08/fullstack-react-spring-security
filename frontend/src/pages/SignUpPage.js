@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Container, CssBaseline, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Container, CssBaseline, Link, TextField, Typography } from '@mui/material';
 import { useContext } from 'react';
 import api from '../api/api';
 import { AppContext } from '../context/AppProvider';
@@ -87,6 +87,7 @@ function SignUpPage() {
             Sign Up
           </Button>
         </Box>
+        <Link href="/">Back to Login</Link>
       </Box>
     </Container>
   );

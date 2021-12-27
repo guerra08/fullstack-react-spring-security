@@ -53,6 +53,7 @@ function AppProvider({ children }) {
         doLogin,
         doSignOut,
         doShowAlert,
+        setLoading,
         user,
         loading,
         showAlert,

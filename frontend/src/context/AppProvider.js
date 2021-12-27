@@ -1,5 +1,6 @@
 import { createContext, useState } from 'react';
 import api from '../api/api';
+import { authUser } from '../services/AuthService';
 
 const AppContext = createContext();
 
@@ -14,19 +15,14 @@ function AppProvider({ children }) {
   const [alertContents, setAlertContents] = useState(null);
 
   const doLogin = async (payload) => {
-    setLoading(true);
-    try{
-      const response = await api.post("/auth", payload);
-      if(response.status !== 200){
-        doShowAlert({ severity: "error", contents: "Unable to Login", timeout: 3000 });
-      }
-      else {
-        const { token, user } = response.data;
-        api.defaults.headers.Authorization = `${token.type} ${token.token}`;
-        setUser(user);
-      }
-    } catch (err) {
-      doShowAlert({ severity: "error", contents: "Unable to Login", timeout: 3000 });
+    const [error, data] = await authUser(payload);
+    if (error) {
+      doShowAlert({ severity: "error", contents: error, timeout: 3000 });
+    }
+    else {
+      const { token, user } = data;
+      api.defaults.headers.Authorization = `${token.type} ${token.token}`;
+      setUser(user);
     }
   };
 
@@ -35,7 +31,7 @@ function AppProvider({ children }) {
     setUser(null);
   }
 
-  const doShowAlert = ({severity, contents, timeout}) => {
+  const doShowAlert = ({ severity, contents, timeout }) => {
     setAlertContents(contents);
     setAlertSeverity(severity);
     setShowAlert(timeout);

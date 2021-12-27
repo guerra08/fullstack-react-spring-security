@@ -52,6 +52,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
             .antMatchers(HttpMethod.POST, "/auth").permitAll()
             .antMatchers(HttpMethod.POST, "/register").permitAll()
+            .antMatchers(HttpMethod.POST, "/auth/forgot-password").permitAll()
+            .antMatchers(HttpMethod.POST, "/auth/reset-password").permitAll()
+            .antMatchers(HttpMethod.GET, "/auth/reset-password/validate").permitAll()
             .anyRequest().authenticated();
 
         http.addFilterBefore(new TokenFilter(tokenService, repository), UsernamePasswordAuthenticationFilter.class);

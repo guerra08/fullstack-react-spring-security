@@ -70,6 +70,7 @@ function LoginPage() {
           </Button>
         </Box>
         <Link href="/signup">Create an account</Link>
+        <Link href="/forgot-password">Forgot my password</Link>
       </Box>
     </Container>
   );

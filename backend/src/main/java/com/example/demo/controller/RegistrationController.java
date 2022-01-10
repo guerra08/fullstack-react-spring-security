@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/register")
 public class RegistrationController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+
+    public RegistrationController(UserService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @PostMapping
     public ResponseEntity<?> postRegisterUser(@RequestBody RegistrationDTO payload){

@@ -12,8 +12,8 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-    private String tokenSecret = "IDdnQRx9dQ9nfPFoUA3y";
-    private long expiresAt = 80000000;
+    private final String tokenSecret = "IDdnQRx9dQ9nfPFoUA3y";
+    private final long expiresAt = 80000000;
 
     public String generateToken(Authentication auth){
         User userObject = (User) auth.getPrincipal();

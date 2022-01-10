@@ -19,12 +19,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    PasswordTokenService passwordTokenService;
+    final UserRepository userRepository;
+    final PasswordEncoder passwordEncoder;
+    final PasswordTokenService passwordTokenService;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, PasswordTokenService passwordTokenService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.passwordTokenService = passwordTokenService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

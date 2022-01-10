@@ -14,8 +14,11 @@ import java.util.UUID;
 @Service
 public class PasswordTokenService {
 
-    @Autowired
-    private PasswordTokenRepository passwordTokenRepository;
+    private final PasswordTokenRepository passwordTokenRepository;
+
+    public PasswordTokenService(PasswordTokenRepository passwordTokenRepository) {
+        this.passwordTokenRepository = passwordTokenRepository;
+    }
 
     public PasswordToken createAndSavePasswordToken(User user) {
         if(user != null){

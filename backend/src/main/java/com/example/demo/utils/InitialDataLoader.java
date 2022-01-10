@@ -10,8 +10,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class InitialDataLoader implements ApplicationRunner {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public InitialDataLoader(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

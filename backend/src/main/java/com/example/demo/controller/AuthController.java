@@ -23,14 +23,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private TokenService tokenService;
-    @Autowired
-    private PasswordTokenService passwordTokenService;
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final TokenService tokenService;
+    private final PasswordTokenService passwordTokenService;
+
+    public AuthController(AuthenticationManager authenticationManager, UserService userService, TokenService tokenService, PasswordTokenService passwordTokenService) {
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.tokenService = tokenService;
+        this.passwordTokenService = passwordTokenService;
+    }
 
     @PostMapping
     public ResponseEntity<?> auth(@RequestBody @Validated LoginDTO payload){

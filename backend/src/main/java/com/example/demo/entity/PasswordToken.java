@@ -21,6 +21,7 @@ public class PasswordToken {
     private String token;
 
     @Column(name = "is_used")
+    @Builder.Default
     private boolean isUsed = false;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)

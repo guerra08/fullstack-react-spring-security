@@ -1,4 +1,4 @@
 package com.example.demo.exception;
 
-public class InvalidPasswordTokenException extends Exception{
+public class InvalidPasswordTokenException extends RuntimeException {
 }

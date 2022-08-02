@@ -1,4 +1,4 @@
 package com.example.demo.exception;
 
-public class NonMatchingPasswordException extends Exception{
+public class NonMatchingPasswordException extends RuntimeException {
 }

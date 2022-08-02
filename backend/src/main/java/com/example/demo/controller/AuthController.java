@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.*;
+import com.example.demo.contract.*;
 import com.example.demo.entity.PasswordToken;
 import com.example.demo.entity.User;
 import com.example.demo.exception.InvalidPasswordTokenException;
@@ -10,7 +10,7 @@ import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.service.PasswordTokenService;
 import com.example.demo.service.TokenService;
 import com.example.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -28,45 +29,35 @@ public class AuthController {
     private final TokenService tokenService;
     private final PasswordTokenService passwordTokenService;
 
-    public AuthController(AuthenticationManager authenticationManager, UserService userService, TokenService tokenService, PasswordTokenService passwordTokenService) {
-        this.authenticationManager = authenticationManager;
-        this.userService = userService;
-        this.tokenService = tokenService;
-        this.passwordTokenService = passwordTokenService;
-    }
-
     @PostMapping
-    public ResponseEntity<?> auth(@RequestBody @Validated LoginDTO payload){
+    public ResponseEntity<?> auth(@RequestBody @Validated LoginRequest payload){
         UsernamePasswordAuthenticationToken upt =
-            new UsernamePasswordAuthenticationToken(payload.getEmail(), payload.getPassword());
+            new UsernamePasswordAuthenticationToken(payload.email(), payload.password());
         Authentication auth = authenticationManager.authenticate(upt);
         User user = (User) auth.getPrincipal();
         String token = tokenService.generateToken(auth);
         return ResponseEntity.ok(
-            AuthDTO.builder()
-                .token(TokenDTO.builder().token(token).type("Bearer").build())
-                .user(UserDTO.buildFromEntity(user))
-                .build()
+            new AuthResponse(new TokenResponse("Bearer", token), UserResponse.fromEntity(user))
         );
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> postForgotPassword(@RequestBody ForgotPasswordDTO forgotPasswordDto) throws UserNotFoundException {
-        User user = userService.findByEmail(forgotPasswordDto.getEmail());
-        PasswordToken pt = passwordTokenService.createAndSavePasswordToken(user);
+    public ResponseEntity<?> postForgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        User user = userService.findByEmail(forgotPasswordRequest.email());
+        PasswordToken pt = passwordTokenService.createPasswordTokenForUser(user);
         if(pt != null) return ResponseEntity.ok(pt.getToken());
         return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/reset-password/validate")
-    public ResponseEntity<?> getValidatePasswordToken(@RequestParam String token) throws PasswordTokenNotFoundException {
+    public ResponseEntity<?> getValidatePasswordToken(@RequestParam String token) {
         if (passwordTokenService.isTokenValid(token))
             return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> postResetPassword(@RequestBody ResetPasswordDTO data) throws NonMatchingPasswordException, InvalidPasswordTokenException, PasswordTokenNotFoundException {
+    public ResponseEntity<?> postResetPassword(@RequestBody ResetPasswordRequest data) {
         userService.updateUserPassword(data);
         return ResponseEntity.ok().build();
     }
